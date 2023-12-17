@@ -1,7 +1,7 @@
-name: Validate Pull Request
+name: Validate Merge Queue
 
 on:
-  pull_request:
+  merge_group:
 
 jobs:
   validate-pr:
