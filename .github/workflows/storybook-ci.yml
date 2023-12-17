@@ -37,8 +37,8 @@ on:
             default: false
 
 jobs:
-  storybook-build:
-    name: Build Storybook
+  storybook-ci:
+    name: Storybook CI
     runs-on: ${{ inputs.runs-on }}
     steps:
       - uses: actions/checkout@v4
