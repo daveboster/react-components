@@ -1,0 +1,61 @@
+name: Storybook CI
+
+on:
+    workflow_call:
+        inputs:
+            runs-on:
+                description: 'The type of machine to run the workflow on'
+                required: false
+                type: string
+                default: 'ubuntu-latest'
+            node-version:
+                description: 'The version of node to use'
+                required: false
+                type: string
+                default: 'lts/*'
+            attach-artifact:
+                description: 'Whether to attach the artifact to the workflow run'
+                required: false
+                type: boolean
+                default: false
+    workflow_dispatch:
+      inputs: 
+        runs-on:
+            description: 'The type of machine to run the workflow on'
+            required: false
+            type: string
+            default: 'ubuntu-latest'
+        node-version:
+            description: 'The version of node to use'
+            required: false
+            type: string
+            default: 'lts/*'
+        attach-artifact:
+            description: 'Whether to attach the artifact to the workflow run'
+            required: false
+            type: boolean
+            default: false
+
+jobs:
+  storybook-build:
+    runs-on: ${{ inputs.runs-on }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ inputs.node-version }}
+
+      - name: Build Storybook
+        shell: pwsh
+        run: |
+          npm ci
+          npm run build-storybook
+      
+      - name: Attach Build Artifact
+        if: ${{ inputs.attach-artifact }}
+        uses: actions/upload-artifact@v4
+        with:
+            name: storybook-build
+            path: storybook-static/
