@@ -19,6 +19,22 @@ on:
                 type: boolean
                 default: false
     workflow_dispatch:
+      inputs: 
+        runs-on:
+            description: 'The type of machine to run the workflow on'
+            required: false
+            type: string
+            default: 'ubuntu-latest'
+        node-version:
+            description: 'The version of node to use'
+            required: false
+            type: string
+            default: 'lts/*'
+        attach-artifact:
+            description: 'Whether to attach the artifact to the workflow run'
+            required: false
+            type: boolean
+            default: false
 
 jobs:
   storybook-build:
