@@ -5,22 +5,5 @@ on:
 
 jobs:
   validate-pr:
-    runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        node-version: [20.x]
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-
-      - name: Run unit tests
-        run: |
-          npm install
-
-      - name: Build Storybook
-        run: |
-          npm run build-storybook
+    uses: "./.github/workflows/storybook-ci.yml"
+      
