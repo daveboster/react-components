@@ -10,7 +10,6 @@ jobs:
     runs-on: ubuntu-latest
     if: always() && !contains(join(needs.*.result, ','), 'failure')
     needs: 
-      - changes
       - storybook-ci
     steps:
       - name: Log Results
@@ -34,7 +33,7 @@ jobs:
     permissions:
       pull-requests: read
     outputs:
-      backend: ${{ steps.filter.outputs.storybook }}
+      storybook: ${{ steps.filter.outputs.storybook }}
     steps:
     - uses: dorny/paths-filter@v2
       id: filter
@@ -49,5 +48,5 @@ jobs:
 
   storybook-ci:
     needs: changes
-    if: needs.changes.outputs.storybook == 'true'
+    if: ${{ needs.changes.outputs.storybook == 'true' }}
     uses: "./.github/workflows/storybook-ci.yml"
