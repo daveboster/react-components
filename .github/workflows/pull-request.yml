@@ -33,5 +33,5 @@ jobs:
 
   storybook-ci:
     needs: changes
-    if: ${{ needs.changes.outputs.storybook == 'true' }}
+    if: always() && ${{ needs.changes.outputs.storybook == 'true' }}
     uses: "./.github/workflows/storybook-ci.yml"
