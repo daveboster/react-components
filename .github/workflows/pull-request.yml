@@ -15,13 +15,15 @@ jobs:
         shell: pwsh
         run: |
           Write-Host "Dependency Results: ${{ join(needs.*.result, ',') }}"
-          Write-Host "Dependency Results: ${{ toJSON(needs) }}"
 
       - name: Generate Deployment Summary
         run: |
           "Merge Validation Results" >> $env:GITHUB_STEP_SUMMARY
           "" >> $env:GITHUB_STEP_SUMMARY
-          ("${{ toJSON(needs) }}" | ConvertFrom-Json).psobject.Properties | ForEach-Object {
+          (@"
+          ${{ toJSON(needs) }}
+          "@ 
+          | ConvertFrom-Json).psobject.Properties | ForEach-Object {
               "- $($_.name) $($_.value.result) >> $env:GITHUB_STEP_SUMMARY
           }
 
