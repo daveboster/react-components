@@ -18,13 +18,13 @@ jobs:
 
       - name: Generate Deployment Summary
         run: |
-          "Merge Validation Results" >> $env:GITHUB_STEP_SUMMARY
-          "" >> $env:GITHUB_STEP_SUMMARY
+          $env:GITHUB_STEP_SUMMARY += "Merge Validation Results`n"
+          $env:GITHUB_STEP_SUMMARY += "`n"
           (@"
           ${{ toJSON(needs) }}
           "@ 
           | ConvertFrom-Json).psobject.Properties | ForEach-Object {
-              "- $($_.name) $($_.value.result) >> $env:GITHUB_STEP_SUMMARY
+            $env:GITHUB_STEP_SUMMARY += "- $($_.name): $($_.value.result)`n"
           }
 
   changes: 
