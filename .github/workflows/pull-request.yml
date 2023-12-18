@@ -1,0 +1,54 @@
+name: Validate Pull Request
+
+on:
+  pull_request:
+    branches: [ main ]
+  merge_group:
+
+jobs:
+  merge-validation:
+    name: Merge Validation Checks
+    runs-on: ubuntu-latest
+    if: always() && !contains(join(needs.*.result, ','), 'failure')
+    needs: 
+      - storybook-ci
+    steps:
+      - name: Log Results
+        shell: pwsh
+        run: |
+          Write-Host "Dependency Results: ${{ join(needs.*.result, ',') }}"
+
+      - name: Generate Deployment Summary
+        shell: pwsh
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          "Merge Validation Results`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          ($env:NEEDS_JSON | ConvertFrom-Json).psobject.Properties | ForEach-Object {
+            "- $($_.name): $($_.value.result)`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }
+
+  changes:
+    name: Change Detection
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: read
+    outputs:
+      storybook: ${{ steps.filter.outputs.storybook }}
+    steps:
+    - uses: dorny/paths-filter@v2
+      id: filter
+      with:
+        list-files: shell
+        filters: |
+          storybook:
+            - '.github/workflows/storybook*.*'
+            - '.storybook/**'
+            - 'stories/**'
+            - 'package*.json'
+
+  storybook-ci:
+    needs: changes
+    if: ${{ needs.changes.outputs.storybook == 'true' }}
+    uses: "./.github/workflows/storybook-ci.yml"
