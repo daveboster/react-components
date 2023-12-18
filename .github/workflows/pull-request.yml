@@ -9,10 +9,12 @@ jobs:
   merge-validation:
     runs-on: ubuntu-latest
     needs: storybook-ci
-    if: ${{ contains(join(needs.*.result, ','), 'success') || contains(join(needs.*.result, ','), 'skipped') }}
+    if: always()
     steps:
       - name: All checks passed
-        run: "true"
+        shell: pwsh
+        run: |
+          Write-Host "Dependency Results: ${{ join(needs.*.result, ',') }}"
 
   changes: 
     runs-on: ubuntu-latest
