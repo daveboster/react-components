@@ -21,10 +21,10 @@ jobs:
         env:
           NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
-          $env:GITHUB_STEP_SUMMARY += "Merge Validation Results`n"
-          $env:GITHUB_STEP_SUMMARY += "`n"
+          "Merge Validation Results`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           ($env:NEEDS_JSON | ConvertFrom-Json).psobject.Properties | ForEach-Object {
-            $env:GITHUB_STEP_SUMMARY += "- $($_.name): $($_.value.result)`n"
+            "- $($_.name): $($_.value.result)`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
 
   changes: 
