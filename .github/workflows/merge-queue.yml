@@ -1,9 +1,0 @@
-name: Validate Merge Queue
-
-on:
-  merge_group:
-
-jobs:
-  validate-pr:
-    uses: "./.github/workflows/storybook-ci.yml"
-      
