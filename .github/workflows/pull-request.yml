@@ -16,9 +16,8 @@ jobs:
         run: |
           Write-Host "Dependency Results: ${{ join(needs.*.result, ',') }}"
           Write-Host "Dependency Results: ${{ needs }}"
-          
+
       - name: Generate Deployment Summary
-        uses: actions/github-script@v7
         run: |
           "Merge Validation Results" >> $env:GITHUB_STEP_SUMMARY
           "" >> $env:GITHUB_STEP_SUMMARY
