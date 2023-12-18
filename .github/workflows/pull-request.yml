@@ -17,13 +17,13 @@ jobs:
           Write-Host "Dependency Results: ${{ join(needs.*.result, ',') }}"
 
       - name: Generate Deployment Summary
+        shell: pwsh
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
         run: |
           $env:GITHUB_STEP_SUMMARY += "Merge Validation Results`n"
           $env:GITHUB_STEP_SUMMARY += "`n"
-          (@"
-          ${{ toJSON(needs) }}
-          "@ 
-          | ConvertFrom-Json).psobject.Properties | ForEach-Object {
+          ($env:NEEDS_JSON | ConvertFrom-Json).psobject.Properties | ForEach-Object {
             $env:GITHUB_STEP_SUMMARY += "- $($_.name): $($_.value.result)`n"
           }
 
