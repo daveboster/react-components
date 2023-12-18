@@ -6,15 +6,6 @@ on:
   merge_group:
 
 jobs:
-  can-see-merge-queue-status:
-    name: Merge Queue Status
-    runs-on: ubuntu-latest
-    steps:
-      - name: Immediate success for improved visibility on merge queue
-        shell: pwsh
-        run: |
-          Write-Host "Allows 'See Details' from PR after submitting to Merge Queue"
-
   merge-validation:
     name: Merge Validation Checks
     runs-on: ubuntu-latest
