@@ -8,10 +8,24 @@ on:
 jobs:
   merge-validation:
     runs-on: ubuntu-latest
+    if: always() && !contains(join(needs.*.result, ','), 'failure')
     needs: storybook-ci
     steps:
-      - name: All checks passed
-        run: "true"
+      - name: Log Results
+        shell: pwsh
+        run: |
+          Write-Host "Dependency Results: ${{ join(needs.*.result, ',') }}"
+
+      - name: Generate Deployment Summary
+        shell: pwsh
+        env:
+          NEEDS_JSON: ${{ toJSON(needs) }}
+        run: |
+          "Merge Validation Results`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          "`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          ($env:NEEDS_JSON | ConvertFrom-Json).psobject.Properties | ForEach-Object {
+            "- $($_.name): $($_.value.result)`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
+          }
 
   changes: 
     runs-on: ubuntu-latest
@@ -33,5 +47,5 @@ jobs:
 
   storybook-ci:
     needs: changes
-    if: always() && ${{ needs.changes.outputs.storybook == 'true' }}
+    if: ${{ needs.changes.outputs.storybook == 'true' }}
     uses: "./.github/workflows/storybook-ci.yml"
