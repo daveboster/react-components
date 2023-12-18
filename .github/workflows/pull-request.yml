@@ -9,6 +9,7 @@ jobs:
   merge-validation:
     runs-on: ubuntu-latest
     needs: storybook-ci
+    if: ${{ contains(join(needs.*.result, ','), 'success') || contains(join(needs.*.result, ','), 'skipped') }}
     steps:
       - name: All checks passed
         run: "true"
@@ -33,5 +34,5 @@ jobs:
 
   storybook-ci:
     needs: changes
-    if: always() && ${{ needs.changes.outputs.storybook == 'true' }}
+    if: ${{ needs.changes.outputs.storybook == 'true' }}
     uses: "./.github/workflows/storybook-ci.yml"
