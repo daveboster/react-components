@@ -16,6 +16,7 @@ jobs:
           Write-Host "Allows 'See Details' from PR after submitting to Merge Queue"
 
   merge-validation:
+    name: Merge Queue Validation
     runs-on: ubuntu-latest
     if: always() && !contains(join(needs.*.result, ','), 'failure')
     needs: 
