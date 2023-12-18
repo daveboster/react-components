@@ -2,11 +2,21 @@ name: Validate Pull Request
 
 on:
   pull_request:
-    branches:
-      - main
+    branches: [ main ]
+  merge_group:
 
 jobs:
+  can-see-merge-queue-status:
+    name: Merge Queue Status
+    runs-on: ubuntu-latest
+    steps:
+      - name: Immediate success for improved visibility on merge queue
+        shell: pwsh
+        run: |
+          Write-Host "Allows 'See Details' from PR after submitting to Merge Queue"
+
   merge-validation:
+    name: Merge Validation Checks
     runs-on: ubuntu-latest
     if: always() && !contains(join(needs.*.result, ','), 'failure')
     needs: 
@@ -28,7 +38,8 @@ jobs:
             "- $($_.name): $($_.value.result)`n" | Out-File -FilePath $env:GITHUB_STEP_SUMMARY -Append
           }
 
-  changes: 
+  changes:
+    name: Change Detection
     runs-on: ubuntu-latest
     permissions:
       pull-requests: read
