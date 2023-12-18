@@ -11,7 +11,9 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Immediate success for improved visibility on merge queue
-        run:
+        shell: pwsh
+        run: |
+          Write-Host "Allows 'See Details' from PR after submitting to Merge Queue"
 
   merge-validation:
     runs-on: ubuntu-latest
